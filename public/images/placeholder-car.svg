@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="55%" r="65%">
+      <stop offset="0" stop-color="#1a2550"/><stop offset="1" stop-color="#070b1a"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <path d="M300 560 Q420 420 640 400 L900 390 Q1080 395 1180 470 L1330 500 Q1380 520 1370 570 L1350 600 L250 600 Z" fill="none" stroke="#19d3c5" stroke-width="6" stroke-linejoin="round" opacity=".6"/>
+  <circle cx="480" cy="600" r="70" fill="none" stroke="#19d3c5" stroke-width="6" opacity=".6"/>
+  <circle cx="1140" cy="600" r="70" fill="none" stroke="#19d3c5" stroke-width="6" opacity=".6"/>
+  <text x="800" y="760" text-anchor="middle" fill="#7f8db8" font-family="sans-serif" font-size="40" letter-spacing="12">APEX · TRACK</text>
+</svg>
