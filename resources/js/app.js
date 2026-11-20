@@ -240,3 +240,32 @@ document.addEventListener('submit', (e) => {
     confirmDialog.querySelector('[data-text]').textContent = form.dataset.confirm;
     confirmDialog.showModal();
 });
+
+// ── Графік статистики (Chart.js підвантажується лише на сторінці статистики) ─
+const chartCanvas = document.querySelector('canvas[data-chart]');
+if (chartCanvas) {
+    import('chart.js/auto').then(({ default: Chart }) => {
+        const rows = JSON.parse(chartCanvas.dataset.chart);
+        new Chart(chartCanvas, {
+            type: 'bar',
+            data: {
+                labels: rows.map((r) => r.name),
+                datasets: [{ label: 'Активні бронювання', data: rows.map((r) => r.active), backgroundColor: '#0fa89d', borderRadius: 12, maxBarThickness: 56 }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                animation: reduceMotion ? false : { duration: 1200 },
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, ticks: { precision: 0 } }, x: { grid: { display: false } } },
+            },
+        });
+    });
+}
+
+// ── Попередній перегляд фото перед завантаженням (форма сесії) ───────────────
+document.querySelectorAll('[data-image-preview]').forEach((box) => {
+    box.querySelector('input[type="file"]').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) box.querySelector('[data-preview-img]').src = URL.createObjectURL(file);
+    });
+});
