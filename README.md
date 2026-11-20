@@ -1,58 +1,89 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# APEX TRACK — оренда спорткарів на трек-дні
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Курсова робота «Розроблення WEB-застосунку для оренди спортивних автомобілів на трек-дні з використанням фреймворку Laravel».
+Автор: Дорофєєв Ростислав Романович, група 54.
 
-## About Laravel
+Адміністратор публікує **заїзди** (авто + автодром + час + кількість місць), відвідувачі переглядають гараж,
+зареєстровані пілоти бронюють місця й керують бронюваннями в особистому кабінеті, адміністратор бачить статистику.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Технології (фактичні версії)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| ПЗ | Версія |
+|---|---|
+| PHP | 8.5.12 |
+| Laravel | 13.43.0 |
+| MariaDB | 13.0.2 |
+| Composer | 2.10.3 |
+| Node.js / npm | 22.23.3 / 10.9.9 |
+| Vite | 8.3.8 |
+| Tailwind CSS | 4.3.5 |
+| Chart.js | 4.6.1 |
+| PHPUnit | 12.5.45 |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Архітектура MVC: `routes/web.php` → контролери `app/Http/Controllers` → моделі Eloquent `app/Models` → Blade-шаблони `resources/views`.
 
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Встановлення та запуск
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install
+npm install
+cp .env.example .env          # Windows: copy .env.example .env
+php artisan key:generate
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Створіть базу даних MariaDB/MySQL і вкажіть її в `.env`:
 
-## Contributing
+```sql
+CREATE DATABASE kurs_54_04 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```ini
+DB_CONNECTION=mariadb
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=kurs_54_04
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## Code of Conduct
+```bash
+php artisan migrate --seed    # таблиці + демо-дані з фото
+php artisan storage:link      # доступ до завантажених зображень
+npm run build                 # production-збірка CSS/JS
+php artisan serve --port=8004 # http://localhost:8004
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Демо-дані та облікові записи
 
-## Security Vulnerabilities
+Пароль усіх демо-акаунтів: **Apex2026**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Роль | Email |
+|---|---|
+| Адміністратор | admin@apex.test |
+| Пілоти | olena@apex.test, maksym@apex.test, iryna@apex.test, andrii@apex.test |
 
-## License
+Сідери створюють 4 класи авто, 23 заїзди (20 опубліковано, 2 чернетки, 1 архів), 14 активних і 2 скасовані бронювання,
+один повністю заповнений заїзд. Повторне розгортання: `php artisan migrate:fresh --seed`.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Основні можливості
+
+- Головна зі слайдером актуальних заїздів, каталог «Гараж»: пошук із підказками, фільтри класу, марки й дат, пагінація по 9.
+- Сторінка заїзду: характеристики авто, розклад, вільні місця, бронювання, «Інший час для цього авто».
+- Реєстрація/вхід (роль `user` за замовчуванням, сильний пароль), особистий кабінет із власними бронюваннями.
+- Бронювання в транзакції з блокуванням рядка (`lockForUpdate`): без перевищення місткості й дублікатів, повторна активація скасованого.
+- Адмінпанель (`/admin`): CRUD заїздів, публікація/архів (заїзд із бронюваннями не видаляється), Form Requests,
+  завантаження фото (JPEG/PNG/WebP ≤ 2 МБ), бронювання на заїзд + експорт CSV, статистика з графіком.
+
+## Тести
+
+```bash
+php artisan test
+```
+
+Тести працюють на окремій БД `kurs_54_04_test` (див. `phpunit.xml`). 77 Feature-тестів: публічні сторінки, автентифікація,
+бронювання, адмінпанель і 42 атаки адверсаріального ревью (`tests/Feature/AdversarialTest.php`); 2 атаки поза вимогами
+позначені як пропущені.
+
+## Джерела зображень
+
+Фото авто — Wikimedia Commons (CC BY-SA та інші вільні ліцензії); автори й посилання — `database/seeders/images/credits.json`.
