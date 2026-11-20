@@ -2,8 +2,8 @@
 @php
     $isActive = isset($userBooking) && $userBooking?->status === 'active';
     $reason = match (true) {
-        $session->status === 'archived' => 'Сесію перенесено в архів — бронювання закрите.',
-        $session->status !== 'published' => 'Сесія ще не опублікована.',
+        $session->status === 'archived' => 'Заїзд перенесено в архів — бронювання закрите.',
+        $session->status !== 'published' => 'Заїзд ще не опубліковано.',
         ! $session->starts_at->isFuture() => 'Заїзд уже розпочався.',
         $session->available_seats === 0 => 'Усі місця заброньовано.',
         default => null,

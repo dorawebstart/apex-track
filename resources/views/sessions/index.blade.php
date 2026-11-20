@@ -7,7 +7,7 @@
                     <p class="eyebrow text-apex-300">Гараж APEX</p>
                     <h1 class="mt-5 text-4xl font-medium leading-tight sm:text-6xl">Оберіть авто для заїзду</h1>
                 </div>
-                <p class="max-w-lg text-lg text-slate-400 lg:justify-self-end">Усі опубліковані трек-сесії: суперкари, гран-турізмо, гіперкари та трекові боліди на автодромах Європи.</p>
+                <p class="max-w-lg text-lg text-slate-400 lg:justify-self-end">Усі опубліковані заїзди: суперкари, гран-турізмо, гіперкари та трекові боліди на автодромах Європи.</p>
             </div>
 
             {{-- Фільтри застосовуються одразу після зміни (data-autosubmit); Enter у пошуку — теж --}}
@@ -65,7 +65,7 @@
     {{-- Світла сітка результатів --}}
     <section class="bg-paper-50 text-ink-900">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-            <p class="eyebrow text-ink-600">Знайдено сесій: <span class="text-ink-900">{{ $sessions->total() }}</span></p>
+            <p class="eyebrow text-ink-600">Знайдено заїздів: <span class="text-ink-900">{{ $sessions->total() }}</span></p>
 
             @if ($sessions->isEmpty())
                 <div class="py-24 text-center">

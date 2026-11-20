@@ -9,12 +9,12 @@
                     <p class="eyebrow text-apex-300">Адмінпанель</p>
                     <h1 class="mt-3 text-3xl font-medium sm:text-4xl">{{ $heading ?? $title }}</h1>
                 </div>
-                <a href="{{ route('admin.sessions.create') }}" class="btn-primary !py-2.5">+ Нова сесія</a>
+                <a href="{{ route('admin.sessions.create') }}" class="btn-primary !py-2.5">+ Новий заїзд</a>
             </div>
             <nav class="mt-8 flex gap-7 overflow-x-auto text-sm font-semibold" aria-label="Розділи адмінпанелі">
                 @foreach ([
                     ['admin.dashboard', 'Огляд', 'admin.dashboard'],
-                    ['admin.sessions.index', 'Сесії', 'admin.sessions.*'],
+                    ['admin.sessions.index', 'Заїзди', 'admin.sessions.*'],
                     ['admin.stats', 'Статистика', 'admin.stats'],
                 ] as [$route, $label, $pattern])
                     <a href="{{ route($route) }}" @class([

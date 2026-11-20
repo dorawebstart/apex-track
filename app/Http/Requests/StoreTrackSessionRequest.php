@@ -45,7 +45,7 @@ class StoreTrackSessionRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'starts_at.after' => 'Дата початку нової сесії має бути в майбутньому.',
+            'starts_at.after' => 'Дата початку нового заїзду має бути в майбутньому.',
             'ends_at.after' => 'Дата завершення має бути пізніше дати початку.',
             'image.max' => 'Зображення не може бути більшим за 2 МБ.',
         ];

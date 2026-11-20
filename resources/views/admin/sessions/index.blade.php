@@ -1,4 +1,4 @@
-<x-admin-layout title="Сесії" heading="Трек-сесії">
+<x-admin-layout title="Заїзди" heading="Заїзди">
     <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold">
         @foreach (['' => 'Усі'] + \App\Models\TrackSession::STATUSES as $value => $label)
             <a href="{{ route('admin.sessions.index', array_filter(['status' => $value])) }}" @class([
@@ -13,7 +13,7 @@
         <table class="w-full min-w-[960px] text-left text-sm">
             <thead class="eyebrow text-ink-600">
                 <tr class="border-b border-ink-900/15">
-                    <th class="py-4 pr-4 font-bold">Сесія</th>
+                    <th class="py-4 pr-4 font-bold">Заїзд</th>
                     <th class="py-4 pr-4 font-bold">Клас</th>
                     <th class="py-4 pr-4 font-bold">Початок</th>
                     <th class="py-4 pr-4 font-bold">Місця</th>
@@ -52,7 +52,7 @@
                                     </form>
                                 @endforeach
                                 <form method="POST" action="{{ route('admin.sessions.destroy', $s) }}"
-                                      data-confirm="{{ $s->bookings_count ? "Сесія «{$s->title}» має бронювання — її буде перенесено в архів. Продовжити?" : "Видалити сесію «{$s->title}» назавжди?" }}">
+                                      data-confirm="{{ $s->bookings_count ? "Заїзд «{$s->title}» має бронювання — його буде перенесено в архів. Продовжити?" : "Видалити заїзд «{$s->title}» назавжди?" }}">
                                     @csrf
                                     @method('DELETE')
                                     <button class="text-rose-600 hover:underline">Видалити</button>
@@ -61,7 +61,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="6" class="py-12 text-center text-ink-600">Сесій не знайдено.</td></tr>
+                    <tr><td colspan="6" class="py-12 text-center text-ink-600">Заїздів не знайдено.</td></tr>
                 @endforelse
             </tbody>
         </table>

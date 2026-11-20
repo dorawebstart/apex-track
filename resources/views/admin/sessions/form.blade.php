@@ -16,7 +16,7 @@
 <div class="grid gap-x-16 gap-y-10 lg:grid-cols-[1.4fr_1fr]">
     <div class="space-y-6">
         <p class="eyebrow text-ink-600">Основне</p>
-        <x-field name="title" label="Назва сесії (5–150 символів)" :value="$value('title')" required maxlength="150" />
+        <x-field name="title" label="Назва заїзду (5–150 символів)" :value="$value('title')" required maxlength="150" />
         <div>
             <label for="description" class="label !text-ink-600">Опис (20–5000 символів)</label>
             <textarea id="description" name="description" rows="7" maxlength="5000" required
@@ -79,6 +79,6 @@
 </div>
 
 <div class="mt-12 flex flex-wrap gap-4 border-t border-ink-900/10 pt-8">
-    <button class="btn-dark">{{ $session->exists ? 'Зберегти зміни' : 'Створити сесію' }}</button>
+    <button class="btn-dark">{{ $session->exists ? 'Зберегти зміни' : 'Створити заїзд' }}</button>
     <a href="{{ route('admin.sessions.index') }}" class="btn border border-ink-900/20 hover:border-ink-900">Скасувати</a>
 </div>

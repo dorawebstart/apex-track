@@ -4,8 +4,8 @@
     <div class="mt-14 grid gap-16 lg:grid-cols-2">
         <div>
             <div class="flex items-baseline justify-between">
-                <h2 class="text-xl font-medium">Найближчі сесії</h2>
-                <a href="{{ route('admin.sessions.index') }}" class="link-underline text-sm font-semibold">Усі сесії ›</a>
+                <h2 class="text-xl font-medium">Найближчі заїзди</h2>
+                <a href="{{ route('admin.sessions.index') }}" class="link-underline text-sm font-semibold">Усі заїзди ›</a>
             </div>
             <ul class="mt-4">
                 @forelse ($nextSessions as $s)
@@ -17,7 +17,7 @@
                         <span class="whitespace-nowrap text-sm"><b>{{ $s->active_bookings_count }}</b> / {{ $s->capacity }}</span>
                     </li>
                 @empty
-                    <li class="py-5 text-ink-600">Опублікованих майбутніх сесій немає.</li>
+                    <li class="py-5 text-ink-600">Опублікованих майбутніх заїздів немає.</li>
                 @endforelse
             </ul>
         </div>

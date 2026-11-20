@@ -33,7 +33,7 @@ class BookingController extends Controller
             $session = TrackSession::whereKey($trackSession->id)->lockForUpdate()->firstOrFail();
 
             if ($session->status !== 'published') {
-                return 'Ця сесія не приймає бронювання.';
+                return 'Цей заїзд не приймає бронювання.';
             }
             if (! $session->starts_at->isFuture()) {
                 return 'Заїзд уже розпочався — бронювання закрите.';

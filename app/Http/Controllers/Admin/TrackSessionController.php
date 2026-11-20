@@ -49,7 +49,7 @@ class TrackSessionController extends Controller
 
         $session = TrackSession::create($data);
 
-        return redirect()->route('admin.sessions.index')->with('success', "Сесію «{$session->title}» створено.");
+        return redirect()->route('admin.sessions.index')->with('success', "Заїзд «{$session->title}» створено.");
     }
 
     public function edit(TrackSession $trackSession): View
@@ -84,13 +84,13 @@ class TrackSessionController extends Controller
         if ($trackSession->bookings()->exists()) {
             $trackSession->update(['status' => 'archived']);
 
-            return back()->with('error', "«{$trackSession->title}» має бронювання, тому її перенесено в архів замість видалення.");
+            return back()->with('error', "«{$trackSession->title}» має бронювання, тому його перенесено в архів замість видалення.");
         }
 
         TrackSession::deleteImage($trackSession->image_path);
         $trackSession->delete();
 
-        return back()->with('success', "Сесію «{$trackSession->title}» видалено.");
+        return back()->with('success', "Заїзд «{$trackSession->title}» видалено.");
     }
 
     /**

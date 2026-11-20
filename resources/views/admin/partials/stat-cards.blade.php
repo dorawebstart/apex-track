@@ -1,7 +1,7 @@
 {{-- 4 інформаційні картки статистики (без рамок — тонкі лінії) --}}
 <dl class="grid grid-cols-2 gap-y-10 border-y border-ink-900/10 py-10 lg:grid-cols-4">
     @foreach ([
-        ['sessions', 'усього сесій'],
+        ['sessions', 'усього заїздів'],
         ['published', 'опубліковано'],
         ['users', 'користувачів'],
         ['activeBookings', 'активних бронювань'],
