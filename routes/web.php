@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CabinetController;
@@ -29,4 +30,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/sessions/{trackSession}/book', [BookingController::class, 'start'])->name('bookings.start');
     Route::post('/sessions/{trackSession}/book', [BookingController::class, 'store'])->name('bookings.store');
     Route::delete('/bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy');
+});
+
+// Адміністративна панель — лише для ролі admin (перевірка на сервері)
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [Admin\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/stats', [Admin\DashboardController::class, 'stats'])->name('stats');
+
+    Route::resource('sessions', Admin\TrackSessionController::class)
+        ->except('show')
+        ->parameters(['sessions' => 'trackSession']);
+    Route::patch('/sessions/{trackSession}/status', [Admin\TrackSessionController::class, 'updateStatus'])->name('sessions.status');
+
+    Route::get('/sessions/{trackSession}/bookings', [Admin\BookingController::class, 'index'])->name('sessions.bookings');
+    Route::get('/sessions/{trackSession}/bookings.csv', [Admin\BookingController::class, 'export'])->name('sessions.bookings.export');
 });

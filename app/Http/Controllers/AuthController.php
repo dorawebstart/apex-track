@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
 
 class AuthController extends Controller
@@ -48,7 +47,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        $home = $request->user()->isAdmin() && Route::has('admin.dashboard') ? route('admin.dashboard') : route('cabinet');
+        $home = $request->user()->isAdmin() ? route('admin.dashboard') : route('cabinet');
 
         return redirect()->intended($home)->with('success', 'Ви увійшли як '.$request->user()->name.'.');
     }
