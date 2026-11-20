@@ -21,7 +21,8 @@
                 <div class="absolute inset-x-0 bottom-0">
                     <div class="mx-auto max-w-7xl px-4 pb-28 sm:px-6 lg:px-8">
                         <p class="text-xs font-semibold uppercase tracking-[0.25em] text-white/70">{{ $session->category->name }} · {{ $session->starts_at->translatedFormat('j F') }} · {{ $session->track_name }}</p>
-                        <h1 class="mt-4 max-w-3xl text-4xl font-medium leading-[1.05] text-white sm:text-6xl lg:text-7xl">{{ $session->car_model }}.<br><span class="text-white/70">{{ $session->title }}</span></h1>
+                        <h1 class="mt-4 max-w-3xl text-4xl font-medium leading-[1.05] text-white sm:text-6xl lg:text-7xl">{{ $session->car_model }}</h1>
+                        <p class="mt-4 max-w-xl text-lg text-white/75 sm:text-xl">{{ $session->title }}</p>
                         <div class="mt-8 flex flex-wrap items-center gap-6 text-sm font-semibold">
                             <a href="{{ route('sessions.show', $session) }}#booking" class="btn-primary">Забронювати заїзд</a>
                             <a href="{{ route('sessions.show', $session) }}" class="link-underline text-white">Детальніше</a>

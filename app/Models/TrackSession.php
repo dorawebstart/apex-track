@@ -151,9 +151,13 @@ class TrackSession extends Model
         $path = 'sessions/'.uniqid('car_', true).'.'.strtolower($extension);
         Storage::disk('public')->put($path, file_get_contents($sourcePath));
 
+        // Розпаковане фото 6000×3000 займає ~70 МБ у GD — стандартних 128 МБ PHP не вистачає
+        ini_set('memory_limit', '512M');
+
         $image = imagecreatefromstring(file_get_contents($sourcePath));
         if ($image !== false) {
             $thumb = imagescale($image, min(1280, imagesx($image)));
+            unset($image);
             ob_start();
             imagewebp($thumb, null, 88);
             Storage::disk('public')->put(self::thumbPathFor($path), ob_get_clean());
