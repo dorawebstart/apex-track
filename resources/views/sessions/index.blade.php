@@ -1,58 +1,69 @@
 <x-layouts.app title="Гараж">
-    <section class="mx-auto max-w-7xl px-4 pt-32 sm:px-6 lg:px-8">
-        <div data-reveal="left">
-            <p class="chip">Гараж APEX</p>
-            <h1 class="mt-4 text-3xl font-bold sm:text-5xl">Оберіть авто для заїзду</h1>
-            <p class="mt-3 max-w-2xl text-slate-400">Усі опубліковані трек-сесії: суперкари, гран-турізмо, гіперкари та трекові боліди.</p>
+    {{-- Темна шапка з фільтрами --}}
+    <section class="bg-[radial-gradient(ellipse_at_80%_0%,_#1a2550_0%,_#070b1a_60%)]">
+        <div class="mx-auto max-w-7xl px-4 pb-16 pt-36 sm:px-6 lg:px-8">
+            <div class="grid gap-8 lg:grid-cols-2 lg:items-end" data-reveal="left">
+                <div>
+                    <p class="eyebrow text-apex-300">Гараж APEX</p>
+                    <h1 class="mt-5 text-4xl font-medium leading-tight sm:text-6xl">Оберіть авто для заїзду</h1>
+                </div>
+                <p class="max-w-lg text-lg text-slate-400 lg:justify-self-end">Усі опубліковані трек-сесії: суперкари, гран-турізмо, гіперкари та трекові боліди на автодромах Європи.</p>
+            </div>
+
+            <form method="GET" action="{{ route('sessions.index') }}" class="mt-14 grid gap-6 border-t border-white/10 pt-8 md:grid-cols-[2fr_1fr_1fr_1fr_auto] md:items-end">
+                <div>
+                    <label for="q" class="label">Пошук за назвою</label>
+                    <input id="q" name="q" type="search" value="{{ $filters['q'] ?? '' }}" placeholder="Напр., F40 або Ring" class="input">
+                </div>
+                <div>
+                    <label for="category" class="label">Клас авто</label>
+                    <select id="category" name="category" class="input">
+                        <option value="">Усі класи</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->slug }}" @selected(($filters['category'] ?? '') === $category->slug)>{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label for="from" class="label">Дата від</label>
+                    <input id="from" name="from" type="date" value="{{ $filters['from'] ?? '' }}" class="input [color-scheme:dark]">
+                </div>
+                <div>
+                    <label for="to" class="label">Дата до</label>
+                    <input id="to" name="to" type="date" value="{{ $filters['to'] ?? '' }}" class="input [color-scheme:dark]">
+                </div>
+                <div class="flex gap-3">
+                    <button class="btn-primary">Знайти</button>
+                    <a href="{{ route('sessions.index') }}" class="btn-ghost text-white">Скинути</a>
+                </div>
+                @if ($errors->any())
+                    <p class="text-sm text-rose-300 md:col-span-5">{{ $errors->first() }}</p>
+                @endif
+            </form>
         </div>
+    </section>
 
-        <form method="GET" action="{{ route('sessions.index') }}" class="card mt-10 grid gap-4 p-5 md:grid-cols-[2fr_1fr_1fr_1fr_auto] md:items-end">
-            <div>
-                <label for="q" class="label">Пошук за назвою</label>
-                <input id="q" name="q" type="search" value="{{ $filters['q'] ?? '' }}" placeholder="Напр., F40 або Ring" class="input">
-            </div>
-            <div>
-                <label for="category" class="label">Клас авто</label>
-                <select id="category" name="category" class="input">
-                    <option value="">Усі класи</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->slug }}" @selected(($filters['category'] ?? '') === $category->slug)>{{ $category->name }}</option>
+    {{-- Світла сітка результатів --}}
+    <section class="bg-paper-50 text-ink-900">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+            <p class="eyebrow text-ink-600">Знайдено сесій: <span class="text-ink-900">{{ $sessions->total() }}</span></p>
+
+            @if ($sessions->isEmpty())
+                <div class="py-24 text-center">
+                    <p class="font-display text-3xl font-medium">Нічого не знайдено</p>
+                    <p class="mt-3 text-ink-600">Спробуйте змінити запит або скинути фільтри.</p>
+                    <a href="{{ route('sessions.index') }}" class="btn-dark mt-8">Скинути фільтри</a>
+                </div>
+            @else
+                <div class="mt-10 grid gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
+                    @foreach ($sessions as $session)
+                        <div data-reveal="up" style="transition-delay: {{ ($loop->index % 3) * 100 }}ms">
+                            @include('partials.session-card', ['session' => $session])
+                        </div>
                     @endforeach
-                </select>
-            </div>
-            <div>
-                <label for="from" class="label">Дата від</label>
-                <input id="from" name="from" type="date" value="{{ $filters['from'] ?? '' }}" class="input [color-scheme:dark]">
-            </div>
-            <div>
-                <label for="to" class="label">Дата до</label>
-                <input id="to" name="to" type="date" value="{{ $filters['to'] ?? '' }}" class="input [color-scheme:dark]">
-            </div>
-            <div class="flex gap-2">
-                <button class="btn-primary">Знайти</button>
-                <a href="{{ route('sessions.index') }}" class="btn-ghost" title="Скинути фільтри">Скинути</a>
-            </div>
-            @if ($errors->any())
-                <p class="text-sm text-rose-300 md:col-span-5">{{ $errors->first() }}</p>
+                </div>
+                <div class="mt-20">{{ $sessions->links() }}</div>
             @endif
-        </form>
-
-        <p class="mt-8 text-sm text-slate-400">Знайдено сесій: <span class="font-bold text-white">{{ $sessions->total() }}</span></p>
-
-        @if ($sessions->isEmpty())
-            <div class="card mt-6 p-12 text-center">
-                <p class="text-lg font-bold">Нічого не знайдено</p>
-                <p class="mt-2 text-slate-400">Спробуйте змінити запит або скинути фільтри.</p>
-            </div>
-        @else
-            <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                @foreach ($sessions as $session)
-                    <div data-reveal="up" style="transition-delay: {{ ($loop->index % 3) * 100 }}ms">
-                        @include('partials.session-card', ['session' => $session])
-                    </div>
-                @endforeach
-            </div>
-            <div class="mt-12">{{ $sessions->links() }}</div>
-        @endif
+        </div>
     </section>
 </x-layouts.app>

@@ -7,18 +7,29 @@
     --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
     --font-display: 'Unbounded', 'Manrope', ui-sans-serif, sans-serif;
 
-    /* «Нічний бокс»: фон і поверхні */
+    /* «Нічний бокс» — темні сцени */
     --color-night-950: #070b1a;
     --color-night-900: #0d1430;
     --color-night-800: #151d3f;
     --color-night-700: #212b57;
-    --color-night-600: #34407a;
+
+    /* Світлі «паперові» секції та чорнило для тексту на них */
+    --color-paper-50: #f6f5f1;
+    --color-paper-100: #efede7;
+    --color-paper-200: #e2dfd6;
+    --color-ink-900: #0b0f1e;
+    --color-ink-600: #4a4f62;
+
+    /* Графіт — третій тон для чергування секцій */
+    --color-graphite-900: #121417;
+    --color-graphite-800: #1b1e23;
 
     /* Акцент APEX — бірюзовий */
     --color-apex-300: #7ff0e6;
     --color-apex-400: #3fe3d6;
     --color-apex-500: #19d3c5;
     --color-apex-600: #0fa89d;
+    --color-apex-700: #0b7d75;
 }
 
 @layer base {
@@ -29,21 +40,30 @@
 }
 
 /* Компоненти інтерфейсу (Tailwind v4: власні утиліти через @utility) */
-@utility btn { @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-bold transition duration-300; }
-@utility btn-primary { @apply btn bg-apex-500 text-night-950 shadow-lg shadow-apex-500/20 hover:-translate-y-0.5 hover:bg-apex-300; }
-@utility btn-ghost { @apply btn border border-white/15 text-white hover:border-apex-400 hover:text-apex-300; }
+@utility btn { @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold tracking-wide transition duration-300; }
+@utility btn-primary { @apply btn bg-apex-500 text-night-950 hover:-translate-y-0.5 hover:bg-apex-300; }
+@utility btn-ghost { @apply btn border border-current/25 hover:border-apex-500 hover:text-apex-500; }
+@utility btn-dark { @apply btn bg-ink-900 text-white hover:-translate-y-0.5 hover:bg-night-800; }
 @utility btn-danger { @apply btn bg-rose-500/90 text-white hover:bg-rose-400; }
-@utility card { @apply rounded-3xl bg-night-900/80 shadow-xl shadow-black/30 ring-1 ring-white/5; }
+@utility card { @apply rounded-3xl bg-night-900/80 ring-1 ring-white/5; }
 @utility chip { @apply inline-flex items-center rounded-full bg-apex-500/10 px-3 py-1 text-xs font-bold text-apex-300 ring-1 ring-apex-500/30; }
 @utility input { @apply w-full rounded-2xl border-0 bg-night-800 px-4 py-3 text-sm text-white ring-1 ring-white/10 placeholder:text-slate-500 focus:ring-2 focus:ring-apex-500 focus:outline-none; }
 @utility label { @apply mb-1.5 block text-xs font-bold tracking-wider text-slate-400 uppercase; }
-@utility link-underline { @apply underline decoration-apex-500/50 underline-offset-8 transition hover:decoration-apex-400; }
+@utility link-underline { @apply underline decoration-current/40 underline-offset-8 transition hover:decoration-apex-500; }
+
+/* Надзаголовок секції: дрібні капітелі з розрядкою */
+@utility eyebrow { @apply text-xs font-bold tracking-[0.3em] uppercase; }
+/* Великі «тонкі» цифри характеристик, як у шоурумі */
+@utility stat-num { @apply font-display text-5xl font-light tabular-nums leading-none sm:text-6xl lg:text-7xl; }
+/* Рядок інформації з тонкою лінією замість рамки */
+@utility rule-row { @apply flex items-baseline justify-between gap-6 border-b border-current/10 py-5; }
 
 /* Блоки, що «виїжджають» при прокрутці (керує resources/js/app.js) */
-[data-reveal] { opacity: 0; transition: opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1); }
-[data-reveal="up"] { transform: translateY(60px); }
-[data-reveal="left"] { transform: translateX(-80px); }
-[data-reveal="right"] { transform: translateX(80px); }
+[data-reveal] { opacity: 0; transition: opacity 1s cubic-bezier(.2,.7,.2,1), transform 1s cubic-bezier(.2,.7,.2,1); }
+[data-reveal="up"] { transform: translateY(70px); }
+[data-reveal="left"] { transform: translateX(-90px); }
+[data-reveal="right"] { transform: translateX(90px); }
+[data-reveal="zoom"] { transform: scale(.92); }
 [data-reveal].is-visible { opacity: 1; transform: none; }
 
 @media (prefers-reduced-motion: reduce) {

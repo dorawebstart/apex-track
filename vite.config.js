@@ -9,7 +9,7 @@ export default defineConfig({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
             fonts: [
-                bunny('Unbounded', { weights: [500, 700], optimizedFallbacks: false }),
+                bunny('Unbounded', { weights: [300, 500, 700], optimizedFallbacks: false }),
                 bunny('Manrope', { weights: [400, 500, 700], optimizedFallbacks: false }),
             ],
         }),

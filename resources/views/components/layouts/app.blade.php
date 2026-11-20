@@ -31,7 +31,7 @@
 
             <div class="hidden items-center gap-3 md:flex">
                 @auth
-                    <span class="text-sm text-slate-400">{{ auth()->user()->name }}</span>
+                    <span class="text-sm text-slate-300">{{ auth()->user()->name }}</span>
                     @if (Route::has('logout'))
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -88,7 +88,7 @@
         {{ $slot }}
     </main>
 
-    <footer class="mt-24 border-t border-white/5 bg-night-950">
+    <footer class="border-t border-white/5 bg-night-950">
         <div class="mx-auto grid max-w-7xl gap-8 px-4 py-12 text-sm text-slate-400 sm:px-6 md:grid-cols-3 lg:px-8">
             <div>
                 <p class="font-display text-base font-bold tracking-[0.35em] text-white">APEX<span class="text-apex-400">·</span>TRACK</p>

@@ -93,40 +93,25 @@ if (slider) {
     restart();
 }
 
-// Плавна анімація числа від 0 до target
-const animateNumber = (el, target, decimals = 0, duration = 1600) => {
-    if (reduceMotion) { el.textContent = target.toFixed(decimals); return; }
+// Великі цифри рахують від 0 до значення, коли з'являються на екрані (десяткові — з комою)
+const animateNumber = (el, target, decimals, duration = 1800) => {
+    const format = (v) => v.toFixed(decimals).replace('.', ',');
+    if (reduceMotion) { el.textContent = format(target); return; }
     const start = performance.now();
     const tick = (now) => {
         const t = Math.min((now - start) / duration, 1);
-        const eased = 1 - Math.pow(1 - t, 3);
-        el.textContent = (target * eased).toFixed(decimals);
+        el.textContent = format(target * (1 - Math.pow(1 - t, 4)));
         if (t < 1) requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
 };
 
-// Спідометр: стрілка від −90° до +90°, дуга заповнюється, лічильник рахує до максимальної швидкості
-const gaugeObserver = new IntersectionObserver((entries) => {
+const counterObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
-        const gauge = entry.target;
-        const speed = Number(gauge.dataset.speed);
-        const ratio = Math.min(speed / Number(gauge.dataset.max), 1);
-        const needle = gauge.querySelector('[data-needle]');
-        const arc = gauge.querySelector('[data-arc]');
-        const easing = 'cubic-bezier(.25,.9,.3,1)';
-
-        needle.style.transition = reduceMotion ? 'none' : `transform 1.6s ${easing}`;
-        arc.style.transition = reduceMotion ? 'none' : `stroke-dashoffset 1.6s ${easing}`;
-        requestAnimationFrame(() => {
-            needle.style.transform = `rotate(${-90 + ratio * 180}deg)`;
-            arc.style.strokeDashoffset = String(100 - ratio * 100);
-        });
-        animateNumber(gauge.querySelector('[data-counter]'), speed);
-        gauge.closest('.card')?.querySelectorAll('[data-count-to]').forEach((el) =>
-            animateNumber(el, Number(el.dataset.countTo), Number(el.dataset.decimals ?? 0)));
-        gaugeObserver.unobserve(gauge);
+        const el = entry.target;
+        animateNumber(el, Number(el.dataset.countTo), Number(el.dataset.decimals ?? 0));
+        counterObserver.unobserve(el);
     });
-}, { threshold: 0.4 });
-document.querySelectorAll('[data-speedometer]').forEach((g) => gaugeObserver.observe(g));
+}, { threshold: 0.6 });
+document.querySelectorAll('[data-count-to]').forEach((el) => counterObserver.observe(el));
