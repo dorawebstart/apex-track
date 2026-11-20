@@ -5,7 +5,7 @@
 
 @theme {
     --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
-    --font-display: 'Unbounded', 'Manrope', ui-sans-serif, sans-serif;
+    --font-display: 'Manrope', ui-sans-serif, system-ui, sans-serif;
 
     /* «Нічний бокс» — темні сцени */
     --color-night-950: #070b1a;
@@ -35,7 +35,7 @@
 @layer base {
     html { scroll-behavior: smooth; }
     body { @apply bg-night-950 text-slate-100 font-sans antialiased; }
-    h1, h2, h3 { @apply font-display tracking-tight; }
+    h1, h2, h3 { @apply font-display tracking-[-0.02em]; }
     :focus-visible { @apply outline-2 outline-offset-2 outline-apex-400; }
 }
 
@@ -55,7 +55,7 @@
 /* Надзаголовок секції: дрібні капітелі з розрядкою */
 @utility eyebrow { @apply text-xs font-bold tracking-[0.3em] uppercase; }
 /* Великі «тонкі» цифри характеристик, як у шоурумі */
-@utility stat-num { @apply font-display text-5xl font-light tabular-nums leading-none sm:text-6xl lg:text-7xl; }
+@utility stat-num { @apply font-display text-5xl font-light tracking-[-0.03em] tabular-nums leading-none sm:text-6xl lg:text-7xl; }
 /* Рядок інформації з тонкою лінією замість рамки */
 @utility rule-row { @apply flex items-baseline justify-between gap-6 border-b border-current/10 py-5; }
 
@@ -70,3 +70,24 @@
 @media (prefers-reduced-motion: reduce) {
     [data-reveal] { opacity: 1; transform: none; transition: none; }
 }
+
+/* Плавна прокрутка Lenis */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* Екран завантаження: лише при першому відкритті сайту в сесії */
+.preloader { position: fixed; inset: 0; z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center; background: var(--color-night-950); transition: opacity .7s ease, visibility .7s; }
+.is-preloading .preloader { display: flex; }
+.preloader.is-done { opacity: 0; visibility: hidden; }
+
+/* Фото проявляються після завантаження, під ними — м'який перелив */
+.img-shell { background: linear-gradient(100deg, #0d1430 30%, #1a2550 50%, #0d1430 70%); background-size: 300% 100%; animation: shimmer 1.6s linear infinite; }
+.img-shell.is-loaded { animation: none; background: transparent; }
+img[data-fade] { opacity: 0; transition: opacity .9s ease, transform 1.2s cubic-bezier(.2,.7,.2,1); }
+img[data-fade].is-loaded { opacity: 1; }
+@keyframes shimmer { to { background-position: -300% 0; } }
+
+/* Повільний наїзд камери на активний слайд (Ken Burns) */
+[data-slide] img { transform: scale(1.08); transition: opacity .9s ease, transform 7s cubic-bezier(.2,.7,.2,1); }
+[data-slide].is-active img { transform: scale(1); }

@@ -81,6 +81,8 @@ class PublicPagesTest extends TestCase
             ->assertOk()
             ->assertJsonCount(1)
             ->assertJsonPath('0.title', 'Ferrari Roma: гран-тур');
+
+        $this->getJson(route('sessions.suggest'))->assertOk()->assertJsonCount(2);
     }
 
     public function test_session_page_shows_details_and_available_seats(): void

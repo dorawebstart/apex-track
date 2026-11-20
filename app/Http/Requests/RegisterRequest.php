@@ -22,8 +22,17 @@ class RegisterRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'min:2', 'max:100'],
             'email' => ['required', 'string', 'email', 'max:150', 'unique:users,email'],
-            'password' => ['required', 'confirmed', Password::min(8)],
+            // Пароль: ≥ 8 символів, великі й малі літери, цифра, без пробілів
+            'password' => ['required', 'confirmed', 'regex:/^\S+$/u', Password::min(8)->letters()->mixedCase()->numbers()],
         ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return ['password.regex' => 'Пароль не може містити пробілів.'];
     }
 
     /**

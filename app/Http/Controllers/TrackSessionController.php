@@ -47,18 +47,17 @@ class TrackSessionController extends Controller
     }
 
     /**
-     * Підказки для поля пошуку (JSON): до 6 опублікованих сесій, схожих за назвою або моделлю.
+     * Підказки для поля пошуку (JSON). Порожній запит — усі найближчі сесії (до 8),
+     * інакше — схожі за назвою або моделлю.
      */
     public function suggest(Request $request): JsonResponse
     {
         $search = trim((string) $request->query('q', ''));
-        if (mb_strlen($search) < 2) {
-            return response()->json([]);
-        }
 
-        $items = $this->search(TrackSession::published(), $search)
+        $items = TrackSession::published()
+            ->when($search !== '', fn (Builder $q) => $this->search($q, $search))
             ->orderBy('starts_at')
-            ->limit(6)
+            ->limit(8)
             ->get(['id', 'title', 'car_model', 'track_name', 'starts_at'])
             ->map(fn (TrackSession $s): array => [
                 'title' => $s->title,

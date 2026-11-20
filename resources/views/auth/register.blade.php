@@ -3,7 +3,7 @@
         @csrf
         <x-field name="name" label="Ім'я" autocomplete="name" required autofocus />
         <x-field name="email" label="Електронна пошта" type="email" autocomplete="email" required />
-        <x-field name="password" label="Пароль (мінімум 8 символів)" type="password" autocomplete="new-password" required />
+        <x-field name="password" label="Пароль: від 8 символів, A–z і цифра" type="password" autocomplete="new-password" required />
         <x-field name="password_confirmation" label="Повторіть пароль" type="password" autocomplete="new-password" required />
         <button class="btn-dark w-full">Створити обліковий запис</button>
     </form>

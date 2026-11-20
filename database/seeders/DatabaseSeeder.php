@@ -13,19 +13,19 @@ class DatabaseSeeder extends Seeder
     /**
      * Демо-дані для захисту: 1 адмін, 4 пілоти, 4 класи, 19 сесій (16 опубліковано),
      * 14 активних і 2 скасовані бронювання, одна сесія повністю заповнена.
-     * Пароль усіх демо-акаунтів: password
+     * Пароль усіх демо-акаунтів: Apex2026
      */
     public function run(): void
     {
         Storage::disk('public')->deleteDirectory('sessions');
 
-        User::factory()->admin()->create(['name' => 'Адміністратор APEX', 'email' => 'admin@apex.test']);
+        User::factory()->admin()->create(['name' => 'Адміністратор APEX', 'email' => 'admin@apex.test', 'password' => 'Apex2026']);
         $pilots = collect([
             ['Олена Коваль', 'olena@apex.test'],
             ['Максим Бондар', 'maksym@apex.test'],
             ['Ірина Шевчук', 'iryna@apex.test'],
             ['Андрій Мельник', 'andrii@apex.test'],
-        ])->map(fn (array $p): User => User::factory()->create(['name' => $p[0], 'email' => $p[1]]));
+        ])->map(fn (array $p): User => User::factory()->create(['name' => $p[0], 'email' => $p[1], 'password' => 'Apex2026']));
 
         $this->call([CategorySeeder::class, TrackSessionSeeder::class]);
 

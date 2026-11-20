@@ -1,8 +1,8 @@
 {{-- Картка сесії без рамки (для світлих секцій): фото, клас, назва, короткий опис, дата, вільні місця, «Детальніше» --}}
 <article class="group flex h-full flex-col">
-    <a href="{{ route('sessions.show', $session) }}" class="relative block overflow-hidden rounded-[2rem]" tabindex="-1">
+    <a href="{{ route('sessions.show', $session) }}" class="img-shell relative block overflow-hidden rounded-[2rem]" tabindex="-1">
         <img src="{{ $session->thumb_url }}" alt="{{ $session->car_model }}" width="1280" height="800"
-             loading="lazy" decoding="async"
+             loading="lazy" decoding="async" data-fade
              class="aspect-[4/3] w-full object-cover transition duration-700 group-hover:scale-105">
         @if ($session->available_seats === 0)
             <span class="absolute right-4 top-4 rounded-full bg-ink-900/80 px-3 py-1 text-xs font-bold text-white backdrop-blur">Місць немає</span>

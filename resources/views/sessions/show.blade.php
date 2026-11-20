@@ -3,29 +3,32 @@
         <link rel="preload" as="image" href="{{ $session->image_url }}" fetchpriority="high">
     @endpush
 
-    {{-- Темна сцена з оригінальним фото --}}
-    <section class="bg-night-950 pt-24">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <a href="{{ route('sessions.index') }}" class="text-sm text-slate-400 transition hover:text-apex-300">← До гаража</a>
-            <div class="relative mt-5 overflow-hidden rounded-[2.5rem]">
-                <img src="{{ $session->image_url }}" alt="{{ $session->car_model }}" width="1920" height="1080"
-                     fetchpriority="high" decoding="async" class="aspect-[16/9] w-full object-cover lg:aspect-[21/9]">
-                <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-night-950/80 via-transparent to-transparent"></div>
-                @if ($session->status !== 'published')
-                    <span class="absolute left-6 top-6 rounded-full bg-amber-400 px-4 py-1.5 text-xs font-bold text-ink-900">{{ \App\Models\TrackSession::STATUSES[$session->status] }}</span>
-                @endif
-            </div>
+    {{-- Фото на весь екран, дата й назва поверх фото (як formulaauto) --}}
+    <section class="relative h-[88svh] min-h-[560px] overflow-hidden bg-night-950">
+        <div class="img-shell absolute inset-0">
+            <img src="{{ $session->image_url }}" alt="{{ $session->car_model }}" width="1920" height="1080"
+                 fetchpriority="high" decoding="async" data-fade data-preload class="size-full object-cover">
         </div>
-        <div class="h-16"></div>
+        <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-black/45"></div>
+
+        <div class="absolute inset-0 flex flex-col items-center justify-center px-4 pt-14 text-center">
+            @if ($session->status !== 'published')
+                <span class="mb-6 rounded-full bg-amber-400 px-4 py-1.5 text-xs font-bold text-ink-900">{{ \App\Models\TrackSession::STATUSES[$session->status] }}</span>
+            @endif
+            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-white/80">{{ $session->starts_at->translatedFormat('j F Y') }} · {{ $session->track_name }}</p>
+            <h1 class="mt-5 max-w-5xl text-4xl font-medium uppercase leading-[1.05] tracking-[0.02em] text-white sm:text-6xl lg:text-7xl">{{ $session->car_model }}</h1>
+            <a href="#booking" class="link-underline mt-8 text-sm font-semibold text-white">Розклад і бронювання ↓</a>
+        </div>
+
+        <a href="{{ route('sessions.index') }}" class="absolute left-4 top-20 z-10 rounded-full bg-black/30 px-4 py-2 text-xs font-semibold text-white backdrop-blur-md transition hover:bg-black/50 sm:left-8">← До гаража</a>
     </section>
 
     {{-- Світла секція: назва й опис ліворуч, великі цифри та розклад праворуч --}}
     <section class="bg-paper-50 text-ink-900">
         <div class="mx-auto grid max-w-7xl gap-16 px-4 py-24 sm:px-6 lg:grid-cols-2 lg:gap-24 lg:px-8">
             <div data-reveal="left">
-                <p class="eyebrow text-apex-700">{{ $session->category->name }}</p>
-                <h1 class="mt-5 text-4xl font-medium uppercase leading-[1.05] sm:text-6xl">{{ $session->car_model }}</h1>
-                <p class="mt-6 font-display text-xl text-ink-600">{{ $session->title }}</p>
+                <p class="eyebrow text-apex-700">{{ $session->category->name }} · {{ $session->brand }}</p>
+                <h2 class="mt-5 text-3xl font-medium leading-tight sm:text-5xl">{{ $session->title }}</h2>
                 <p class="mt-8 whitespace-pre-line text-lg leading-relaxed text-ink-600">{{ $session->description }}</p>
             </div>
 

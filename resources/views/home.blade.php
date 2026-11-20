@@ -5,53 +5,56 @@
         @endpush
     @endif
 
-    {{-- 1. HERO — темна «сцена» зі слайдером актуальних сесій --}}
-    <section class="relative overflow-hidden bg-[radial-gradient(ellipse_at_50%_40%,_#1a2550_0%,_#070b1a_70%)] pt-24" data-slider>
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col gap-4 pt-6 sm:flex-row sm:items-center sm:justify-between">
-                <p class="eyebrow text-slate-400">Актуальні заїзди</p>
-                <div class="flex flex-wrap gap-x-6 gap-y-2" role="tablist" aria-label="Клас авто">
-                    <button type="button" class="pb-1 text-sm font-semibold text-slate-400 transition hover:text-white aria-selected:text-white aria-selected:shadow-[inset_0_-2px_0_#19d3c5]" role="tab" aria-selected="true" data-filter="all">Усі</button>
+    {{-- 1. HERO — фото на весь екран, текст поверх фото (як Porsche Motorsport), слайди з плавним переходом --}}
+    <section class="relative h-[100svh] min-h-[620px] overflow-hidden bg-night-950" data-slider>
+        @forelse ($sessions as $session)
+            <article @class(['absolute inset-0 transition-opacity duration-1000', 'is-active' => $loop->first, 'opacity-0 pointer-events-none' => ! $loop->first])
+                     data-slide data-category="{{ $session->category->slug }}" @if (! $loop->first) aria-hidden="true" @endif>
+                <div class="img-shell absolute inset-0">
+                    <img src="{{ $session->image_url }}" alt="{{ $session->car_model }} — {{ $session->title }}"
+                         width="1920" height="1080" decoding="async" data-fade
+                         @if ($loop->first) fetchpriority="high" data-preload @else loading="lazy" @endif
+                         class="size-full object-cover">
+                </div>
+                <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40"></div>
+
+                <div class="absolute inset-x-0 bottom-0">
+                    <div class="mx-auto max-w-7xl px-4 pb-28 sm:px-6 lg:px-8">
+                        <p class="text-xs font-semibold uppercase tracking-[0.25em] text-white/70">{{ $session->category->name }} · {{ $session->starts_at->translatedFormat('j F') }} · {{ $session->track_name }}</p>
+                        <h1 class="mt-4 max-w-3xl text-4xl font-medium leading-[1.05] text-white sm:text-6xl lg:text-7xl">{{ $session->car_model }}.<br><span class="text-white/70">{{ $session->title }}</span></h1>
+                        <div class="mt-8 flex flex-wrap items-center gap-6 text-sm font-semibold">
+                            <a href="{{ route('sessions.show', $session) }}#booking" class="btn-primary">Забронювати заїзд</a>
+                            <a href="{{ route('sessions.show', $session) }}" class="link-underline text-white">Детальніше</a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        @empty
+            <p class="flex h-full items-center justify-center text-slate-400">Найближчих заїздів поки немає — загляньте пізніше.</p>
+        @endforelse
+
+        {{-- Вкладки класів поверх фото --}}
+        <div class="absolute inset-x-0 top-14 z-10">
+            <div class="mx-auto flex max-w-7xl justify-end px-4 pt-6 sm:px-6 lg:px-8">
+                <div class="flex flex-wrap gap-x-5 gap-y-2 rounded-full bg-black/30 px-5 py-2 backdrop-blur-md" role="tablist" aria-label="Клас авто">
+                    <button type="button" class="text-[13px] font-semibold text-white/60 transition hover:text-white aria-selected:text-white" role="tab" aria-selected="true" data-filter="all">Усі</button>
                     @foreach ($categories as $category)
-                        <button type="button" class="pb-1 text-sm font-semibold text-slate-400 transition hover:text-white aria-selected:text-white aria-selected:shadow-[inset_0_-2px_0_#19d3c5]" role="tab" aria-selected="false" data-filter="{{ $category->slug }}">{{ $category->name }}</button>
+                        <button type="button" class="text-[13px] font-semibold text-white/60 transition hover:text-white aria-selected:text-white" role="tab" aria-selected="false" data-filter="{{ $category->slug }}">{{ $category->name }}</button>
                     @endforeach
                 </div>
             </div>
-
-            @forelse ($sessions as $session)
-                <article data-slide data-category="{{ $session->category->slug }}" @if (! $loop->first) hidden @endif>
-                    <div class="relative mt-8 overflow-hidden rounded-[2.5rem]">
-                        <img src="{{ $session->image_url }}" alt="{{ $session->car_model }} — {{ $session->title }}"
-                             width="1920" height="1080" decoding="async"
-                             @if ($loop->first) fetchpriority="high" @else loading="lazy" @endif
-                             class="aspect-[16/9] w-full object-cover sm:aspect-[21/9]">
-                        <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-night-950/60 via-transparent to-transparent"></div>
-                    </div>
-
-                    <div class="mt-10 grid gap-6 md:grid-cols-2 md:items-end md:gap-16">
-                        <div>
-                            <p class="eyebrow text-apex-300">{{ $session->category->name }} · {{ $session->starts_at->translatedFormat('j F') }} · {{ $session->track_name }}</p>
-                            <h1 class="mt-3 text-3xl font-medium uppercase leading-tight text-white sm:text-5xl">{{ $session->car_model }}</h1>
-                            <div class="mt-5 flex gap-8 text-sm font-bold uppercase tracking-wider">
-                                <a href="{{ route('sessions.show', $session) }}" class="link-underline">Детальніше ›</a>
-                                <a href="{{ route('sessions.show', $session) }}#booking" class="link-underline text-apex-300">Забронювати ›</a>
-                            </div>
-                        </div>
-                        <p class="max-w-lg text-lg leading-relaxed text-slate-300 md:justify-self-end md:text-right">{{ Str::limit($session->description, 140) }}</p>
-                    </div>
-                </article>
-            @empty
-                <p class="py-32 text-center text-slate-400">Найближчих заїздів поки немає — загляньте пізніше.</p>
-            @endforelse
-
-            @if ($sessions->count() > 1)
-                <div class="flex items-center justify-center gap-6 py-10">
-                    <button type="button" class="p-2 text-xl text-slate-300 transition hover:text-apex-300" data-prev aria-label="Попередній">←</button>
-                    <div class="flex gap-2" data-dots></div>
-                    <button type="button" class="p-2 text-xl text-slate-300 transition hover:text-apex-300" data-next aria-label="Наступний">→</button>
-                </div>
-            @endif
         </div>
+
+        @if ($sessions->count() > 1)
+            <div class="absolute inset-x-0 bottom-8 z-10">
+                <div class="mx-auto flex max-w-7xl items-center justify-end gap-5 px-4 sm:px-6 lg:px-8">
+                    <span class="text-xs font-semibold tabular-nums text-white/70" data-counter-label></span>
+                    <div class="flex gap-2" data-dots></div>
+                    <button type="button" class="grid size-10 place-items-center rounded-full text-white ring-1 ring-white/30 backdrop-blur transition hover:bg-white hover:text-night-950" data-prev aria-label="Попередній">←</button>
+                    <button type="button" class="grid size-10 place-items-center rounded-full text-white ring-1 ring-white/30 backdrop-blur transition hover:bg-white hover:text-night-950" data-next aria-label="Наступний">→</button>
+                </div>
+            </div>
+        @endif
     </section>
 
     {{-- 2. ІДЕЯ — світла секція, великий заголовок + цифри (без рамок) --}}
@@ -96,15 +99,15 @@
                             <h3 class="mt-5 text-3xl font-medium leading-tight sm:text-4xl">{{ $session->car_model }}</h3>
                             <p class="mt-6 text-lg leading-relaxed text-ink-600">{{ $session->description }}</p>
                             <div class="mt-8 grid grid-cols-3 gap-6 border-t border-ink-900/10 pt-6">
-                                <div><p class="font-display text-2xl font-light">{{ $session->top_speed_kmh }}</p><p class="eyebrow mt-1 text-ink-600">км/год</p></div>
-                                <div><p class="font-display text-2xl font-light">{{ $session->horsepower }}</p><p class="eyebrow mt-1 text-ink-600">к.с.</p></div>
-                                <div><p class="font-display text-2xl font-light">{{ number_format($session->zero_to_100, 1, ',') }}</p><p class="eyebrow mt-1 text-ink-600">0–100, с</p></div>
+                                <div><p class="text-2xl font-light">{{ $session->top_speed_kmh }}</p><p class="eyebrow mt-1 text-ink-600">км/год</p></div>
+                                <div><p class="text-2xl font-light">{{ $session->horsepower }}</p><p class="eyebrow mt-1 text-ink-600">к.с.</p></div>
+                                <div><p class="text-2xl font-light">{{ number_format($session->zero_to_100, 1, ',') }}</p><p class="eyebrow mt-1 text-ink-600">0–100, с</p></div>
                             </div>
                             <a href="{{ route('sessions.show', $session) }}" class="btn-dark mt-10">Дивитися заїзд →</a>
                         </div>
-                        <div @class(['lg:col-span-7', 'lg:order-1' => $even]) data-reveal="zoom">
-                            <img src="{{ $session->thumb_url }}" alt="{{ $session->car_model }}" width="1280" height="800" loading="lazy" decoding="async"
-                                 class="aspect-[4/3] w-full rounded-[2.5rem] object-cover lg:aspect-[16/11]">
+                        <div @class(['img-shell overflow-hidden rounded-[2.5rem] lg:col-span-7', 'lg:order-1' => $even]) data-reveal="zoom">
+                            <img src="{{ $session->thumb_url }}" alt="{{ $session->car_model }}" width="1280" height="800" loading="lazy" decoding="async" data-fade
+                                 class="aspect-[4/3] w-full object-cover lg:aspect-[16/11]">
                         </div>
                     </div>
                 @endforeach

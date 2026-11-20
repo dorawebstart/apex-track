@@ -6,17 +6,23 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ isset($title) ? $title.' — ' : '' }}{{ config('app.name') }}</title>
     <meta name="description" content="APEX TRACK — оренда спортивних автомобілів і болідів для заїздів на гоночних треках.">
+    <script>try { if (!sessionStorage.getItem('apex-loaded')) document.documentElement.classList.add('is-preloading'); } catch (e) {}</script>
     @stack('head')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen flex flex-col">
+    <div class="preloader" data-preloader aria-hidden="true">
+        <p class="text-sm font-bold tracking-[0.4em] text-white">APEX<span class="text-apex-400">·</span>TRACK</p>
+        <p class="mt-6 text-6xl font-light tabular-nums text-white sm:text-8xl"><span data-preloader-value>0</span>%</p>
+        <div class="mt-8 h-px w-48 overflow-hidden bg-white/10"><div class="h-full w-0 bg-apex-400 transition-[width] duration-300" data-preloader-bar></div></div>
+    </div>
     <header class="fixed inset-x-0 top-0 z-50 bg-night-950/80 backdrop-blur-lg" data-header>
-        <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-4 sm:px-6 lg:px-8">
-            <a href="{{ route('home') }}" class="font-display text-lg font-bold tracking-[0.35em] text-white">
+        <div class="mx-auto flex h-14 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
+            <a href="{{ route('home') }}" class="text-sm font-bold tracking-[0.4em] text-white">
                 APEX<span class="text-apex-400">·</span>TRACK
             </a>
 
-            <nav class="hidden items-center gap-8 text-sm font-semibold md:flex" aria-label="Головне меню">
+            <nav class="hidden items-center gap-7 text-[13px] font-semibold md:flex" aria-label="Головне меню">
                 <a href="{{ route('home') }}" @class(['link-underline', 'text-apex-300' => request()->routeIs('home')])>Головна</a>
                 <a href="{{ route('sessions.index') }}" @class(['link-underline', 'text-apex-300' => request()->routeIs('sessions.*')])>Гараж</a>
                 @auth
@@ -31,22 +37,22 @@
 
             <div class="hidden items-center gap-3 md:flex">
                 @auth
-                    <span class="text-sm text-slate-300">{{ auth()->user()->name }}</span>
+                    <span class="text-[13px] text-slate-300">{{ auth()->user()->name }}</span>
                     @if (Route::has('logout'))
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button class="btn-ghost !px-4 !py-2">Вийти</button>
+                            <button class="btn-ghost !px-4 !py-1.5 !text-xs">Вийти</button>
                         </form>
                     @endif
                 @else
                     @if (Route::has('login'))
-                        <a href="{{ route('login') }}" class="btn-ghost !px-4 !py-2">Вхід</a>
-                        <a href="{{ route('register') }}" class="btn-primary !px-4 !py-2">Реєстрація</a>
+                        <a href="{{ route('login') }}" class="btn-ghost !px-4 !py-1.5 !text-xs">Вхід</a>
+                        <a href="{{ route('register') }}" class="btn-primary !px-4 !py-1.5 !text-xs">Реєстрація</a>
                     @endif
                 @endauth
             </div>
 
-            <button type="button" class="rounded-2xl p-2 text-white ring-1 ring-white/15 md:hidden" data-menu-toggle aria-expanded="false" aria-controls="mobile-menu" aria-label="Відкрити меню">
+            <button type="button" class="rounded-xl p-1.5 text-white ring-1 ring-white/15 md:hidden" data-menu-toggle aria-expanded="false" aria-controls="mobile-menu" aria-label="Відкрити меню">
                 <svg class="size-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg>
             </button>
         </div>
@@ -72,7 +78,7 @@
     </header>
 
     @if (session('success') || session('error'))
-        <div class="fixed inset-x-0 top-20 z-40 mx-auto w-full max-w-xl px-4" data-flash>
+        <div class="fixed inset-x-0 top-16 z-40 mx-auto w-full max-w-xl px-4" data-flash>
             <div @class([
                 'flex items-start gap-3 rounded-2xl px-5 py-4 text-sm font-semibold shadow-2xl ring-1 backdrop-blur',
                 'bg-apex-500/15 text-apex-300 ring-apex-400/40' => session('success'),

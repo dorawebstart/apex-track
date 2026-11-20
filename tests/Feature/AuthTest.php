@@ -19,14 +19,14 @@ class AuthTest extends TestCase
         $this->post(route('register'), [
             'name' => 'Новий Пілот',
             'email' => 'pilot@example.test',
-            'password' => 'secret123',
-            'password_confirmation' => 'secret123',
+            'password' => 'Secret123',
+            'password_confirmation' => 'Secret123',
             'role' => 'admin',
         ])->assertRedirect(route('cabinet'));
 
         $user = User::where('email', 'pilot@example.test')->firstOrFail();
         $this->assertSame('user', $user->role);
-        $this->assertNotSame('secret123', $user->password);
+        $this->assertNotSame('Secret123', $user->password);
         $this->assertAuthenticatedAs($user);
     }
 
@@ -36,6 +36,20 @@ class AuthTest extends TestCase
             ->assertSessionHasErrors(['name', 'email', 'password']);
 
         $this->assertGuest();
+    }
+
+    public function test_weak_passwords_are_rejected(): void
+    {
+        foreach (['123_=  ~', '12345678', 'password', 'Password', 'Pass 1234'] as $weak) {
+            $this->post(route('register'), [
+                'name' => 'Пілот',
+                'email' => 'weak@example.test',
+                'password' => $weak,
+                'password_confirmation' => $weak,
+            ])->assertSessionHasErrors('password');
+        }
+
+        $this->assertDatabaseMissing('users', ['email' => 'weak@example.test']);
     }
 
     public function test_user_can_log_in_and_out(): void
