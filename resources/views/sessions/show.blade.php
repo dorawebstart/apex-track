@@ -66,6 +66,29 @@
                     <div class="mt-10">
                         @include('sessions.partials.booking-actions')
                     </div>
+
+                    {{-- Інший час на цьому ж авто --}}
+                    <div class="mt-16">
+                        <p class="eyebrow text-ink-600">Інший час для {{ $session->car_model }}</p>
+                        @forelse ($otherTimes as $other)
+                            <a href="{{ route('sessions.show', $other) }}#booking" class="rule-row group transition hover:text-apex-700">
+                                <span>
+                                    <span class="block font-semibold">{{ $other->starts_at->translatedFormat('j F, l · H:i') }}</span>
+                                    <span class="text-sm text-ink-600">{{ $other->track_name }}</span>
+                                </span>
+                                <span class="flex items-center gap-4 whitespace-nowrap text-sm">
+                                    @if ($other->available_seats > 0)
+                                        <span class="text-ink-600">вільно <b class="text-ink-900">{{ $other->available_seats }}</b></span>
+                                    @else
+                                        <span class="font-semibold text-rose-600">заповнено</span>
+                                    @endif
+                                    <span class="transition group-hover:translate-x-1">→</span>
+                                </span>
+                            </a>
+                        @empty
+                            <p class="mt-4 text-ink-600">Інших дат для цього авто поки немає. <a href="{{ route('sessions.index', ['brand' => $session->brand]) }}" class="link-underline font-semibold text-ink-900">Інші авто {{ $session->brand }}</a></p>
+                        @endforelse
+                    </div>
                 </div>
             </div>
         </div>

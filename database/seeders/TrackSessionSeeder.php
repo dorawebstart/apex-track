@@ -10,7 +10,7 @@ use Illuminate\Database\Seeder;
 class TrackSessionSeeder extends Seeder
 {
     /**
-     * 19 трек-сесій на реальних авто. Фото — database/seeders/images (Wikimedia Commons, див. credits.json).
+     * 23 заїзди на реальних авто. Фото — database/seeders/images (Wikimedia Commons, див. credits.json).
      * Дати відносні від «зараз», тож після повторного розгортання сесії знову актуальні.
      */
     public function run(): void
@@ -89,6 +89,15 @@ class TrackSessionSeeder extends Seeder
                 'draft', 'Розширена програма з тренуванням піт-стопу разом з механіками. Дата уточнюється.'],
             ['red-bull-rb7', 'track-only', 'Red Bull RB7: шоу-кар F1', 'Red Bull RB7 (Formula 1)', 'Red Bull Ring', 750, 340, 2.4, 27, 4, 4,
                 'published', 'Чемпіонський болід 2011 року з V8 2.4 л. Програма включає симулятор, медичний огляд і три кола за безпечним авто з поступовим збільшенням темпу.'],
+            // Додаткові дати для популярних авто — блок «Інший час» на сторінці заїзду
+            ['mclaren-artura', 'supercars', 'Artura: вечірня серія на Hungaroring', 'McLaren Artura', 'Hungaroring', 680, 330, 3.0, 13, 3, 8,
+                'published', 'Друга дата на гібридному McLaren: вечірній заїзд на технічній угорській трасі з м\'якшим сонцем і прохолоднішим асфальтом. Формат той самий — брифінг, три серії, телеметрія.'],
+            ['porsche-911-gt3-rs', 'track-only', '911 GT3 RS: ранкова школа на Slovakia Ring', 'Porsche 911 GT3 RS (992)', 'Slovakia Ring', 525, 296, 3.2, 12, 4, 10,
+                'published', 'Ще одна дата для GT3 RS — на довгій словацькій трасі з високошвидкісними поворотами. Підходить і новачкам, і тим, хто вже їздив з нами на Red Bull Ring.'],
+            ['ferrari-f2004', 'track-only', 'Болід F1 Ferrari F2004: друга дата', 'Ferrari F2004 (Formula 1)', 'Autodromo di Monza', 865, 360, 2.4, 26, 5, 3,
+                'published', 'Додаткова дата на болиді Шумахера для тих, кому не вистачило місця. Та сама програма: теорія, симулятор, прогрівання шин і п\'ять кіл на справжньому болиді Формули 1.'],
+            ['ferrari-roma', 'grand-tourer', 'Ferrari Roma: вихідний день на Red Bull Ring', 'Ferrari Roma', 'Red Bull Ring', 620, 320, 3.4, 23, 5, 12,
+                'published', 'Гран-турізмо для новачків на альпійській трасі. Спокійний темп у перших серіях, далі — повний газ на прямій до третього повороту.'],
         ];
     }
 }

@@ -79,7 +79,15 @@ class TrackSessionController extends Controller
 
         $userBooking = auth()->user()?->bookings()->where('track_session_id', $trackSession->id)->first();
 
-        return view('sessions.show', ['session' => $trackSession, 'userBooking' => $userBooking]);
+        // «Інший час»: інші майбутні опубліковані заїзди на цьому ж авто
+        $otherTimes = TrackSession::upcoming()
+            ->where('car_model', $trackSession->car_model)
+            ->whereKeyNot($trackSession->id)
+            ->withCount('activeBookings')
+            ->orderBy('starts_at')
+            ->get();
+
+        return view('sessions.show', ['session' => $trackSession, 'userBooking' => $userBooking, 'otherTimes' => $otherTimes]);
     }
 
     /**

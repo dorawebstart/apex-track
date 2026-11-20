@@ -95,6 +95,22 @@ class PublicPagesTest extends TestCase
             ->assertSee('330');
     }
 
+    public function test_session_page_lists_other_times_for_same_car(): void
+    {
+        $session = TrackSession::factory()->create(['car_model' => 'Ferrari F40']);
+        $other = TrackSession::factory()->create(['car_model' => 'Ferrari F40']);
+        $draft = TrackSession::factory()->draft()->create(['car_model' => 'Ferrari F40']);
+        $past = TrackSession::factory()->past()->create(['car_model' => 'Ferrari F40']);
+        $otherCar = TrackSession::factory()->create(['car_model' => 'McLaren P1']);
+
+        $otherTimes = $this->get(route('sessions.show', $session))->assertOk()->viewData('otherTimes');
+
+        $this->assertEquals([$other->id], $otherTimes->pluck('id')->all());
+        $this->assertNotContains($draft->id, $otherTimes->pluck('id'));
+        $this->assertNotContains($past->id, $otherTimes->pluck('id'));
+        $this->assertNotContains($otherCar->id, $otherTimes->pluck('id'));
+    }
+
     public function test_missing_or_unpublished_session_returns_404(): void
     {
         $draft = TrackSession::factory()->draft()->create();
