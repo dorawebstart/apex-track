@@ -1,10 +1,10 @@
-@props(['name', 'label', 'type' => 'text'])
+@props(['name', 'label', 'type' => 'text', 'value' => null])
 
-{{-- Поле форми на світлому тлі: збереження введеного (old) та повідомлення про помилку --}}
+{{-- Поле форми на світлому тлі: збереження введеного (old), поточне значення, повідомлення про помилку --}}
 <div>
     <label for="{{ $name }}" class="label !text-ink-600">{{ $label }}</label>
     <input id="{{ $name }}" name="{{ $name }}" type="{{ $type }}"
-           @if ($type !== 'password') value="{{ old($name) }}" @endif
+           @if ($type !== 'password') value="{{ old($name, $value) }}" @endif
            {{ $attributes->class(['input-light', '!ring-rose-500' => $errors->has($name)]) }}
            @error($name) aria-invalid="true" aria-describedby="{{ $name }}-error" @enderror>
     @error($name)
