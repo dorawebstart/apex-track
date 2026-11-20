@@ -61,11 +61,7 @@
                     </div>
 
                     <div class="mt-10">
-                        @if (view()->exists('sessions.partials.booking-actions'))
-                            @include('sessions.partials.booking-actions', ['session' => $session])
-                        @else
-                            <p class="text-ink-600">Бронювання стане доступним після входу в систему.</p>
-                        @endif
+                        @include('sessions.partials.booking-actions')
                     </div>
                 </div>
             </div>
