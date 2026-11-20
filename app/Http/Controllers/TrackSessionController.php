@@ -52,7 +52,9 @@ class TrackSessionController extends Controller
      */
     public function suggest(Request $request): JsonResponse
     {
-        $search = trim((string) $request->query('q', ''));
+        // Масив у ?q[]= (підроблений запит) вважаємо порожнім пошуком, а не падаємо з 500
+        $query = $request->query('q');
+        $search = is_string($query) ? trim($query) : '';
 
         $items = TrackSession::published()
             ->when($search !== '', fn (Builder $q) => $this->search($q, $search))
@@ -98,8 +100,11 @@ class TrackSessionController extends Controller
      */
     private function search(Builder $query, string $search): Builder
     {
+        // % і _ у запиті — звичайні символи, а не шаблони LIKE
+        $escaped = addcslashes($search, '%_\\');
+
         return $query->where(fn (Builder $q) => $q
-            ->where('title', 'like', "%{$search}%")
-            ->orWhere('car_model', 'like', "%{$search}%"));
+            ->where('title', 'like', "%{$escaped}%")
+            ->orWhere('car_model', 'like', "%{$escaped}%"));
     }
 }

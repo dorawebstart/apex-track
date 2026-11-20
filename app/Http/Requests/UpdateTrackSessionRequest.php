@@ -22,8 +22,10 @@ class UpdateTrackSessionRequest extends StoreTrackSessionRequest
         $rules = parent::rules();
 
         // Поле datetime-local не передає секунд — порівнюємо з точністю до хвилини
-        $startsUnchanged = $this->filled('starts_at')
-            && Carbon::parse($this->input('starts_at'))->format('Y-m-d H:i') === $session->starts_at->format('Y-m-d H:i');
+        // Сміття чи масив у даті не розбираємо тут (буде 500) — їх відхилить правило 'date' нижче
+        $input = $this->input('starts_at');
+        $startsUnchanged = is_string($input) && strtotime($input) !== false
+            && Carbon::parse($input)->format('Y-m-d H:i') === $session->starts_at->format('Y-m-d H:i');
         $rules['starts_at'] = $startsUnchanged ? ['required', 'date'] : ['required', 'date', 'after:now'];
 
         $rules['capacity'] = ['required', 'integer', 'between:'.max(1, $session->activeBookings()->count()).',10000'];
