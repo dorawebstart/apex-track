@@ -7,7 +7,7 @@
     <section class="relative h-[88svh] min-h-[560px] overflow-hidden bg-night-950">
         <div class="img-shell absolute inset-0">
             <img src="{{ $session->image_url }}" alt="{{ $session->car_model }}" width="1920" height="1080"
-                 fetchpriority="high" decoding="async" data-fade data-preload class="size-full object-cover">
+                 fetchpriority="high" decoding="async" data-fade class="size-full object-cover">
         </div>
         <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-black/45"></div>
 

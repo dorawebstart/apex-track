@@ -13,7 +13,7 @@
                 <div class="img-shell absolute inset-0">
                     <img src="{{ $session->image_url }}" alt="{{ $session->car_model }} — {{ $session->title }}"
                          width="1920" height="1080" decoding="async" data-fade
-                         @if ($loop->first) fetchpriority="high" data-preload @else loading="lazy" @endif
+                         @if ($loop->first) fetchpriority="high" @else loading="lazy" @endif
                          class="size-full object-cover">
                 </div>
                 <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40"></div>

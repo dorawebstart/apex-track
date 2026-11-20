@@ -1,23 +1,7 @@
-// Клієнтські сценарії APEX TRACK: плавна прокрутка, екран завантаження, фото, слайдер,
-// «виїжджаючі» блоки, лічильники, підказки пошуку, автофільтри, вікно підтвердження.
-import Lenis from 'lenis';
+// Клієнтські сценарії APEX TRACK: проявлення фото, слайдер, «виїжджаючі» блоки, лічильники,
+// підказки пошуку, автофільтри, вікно підтвердження.
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-// ── Плавна прокрутка з інерцією (як на neundex.com) ───────────────────────────
-let lenis = null;
-if (!reduceMotion) {
-    lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 0.9 });
-    const raf = (time) => { lenis.raf(time); requestAnimationFrame(raf); };
-    requestAnimationFrame(raf);
-    document.querySelectorAll('a[href^="#"]').forEach((a) => a.addEventListener('click', (e) => {
-        const target = document.querySelector(a.getAttribute('href'));
-        if (target) { e.preventDefault(); lenis.scrollTo(target, { offset: -70 }); }
-    }));
-    if (location.hash && document.querySelector(location.hash)) {
-        window.addEventListener('load', () => lenis.scrollTo(location.hash, { offset: -70, immediate: true }));
-    }
-}
 
 // ── Фото проявляються після завантаження ─────────────────────────────────────
 const markLoaded = (img) => {
@@ -31,45 +15,6 @@ document.querySelectorAll('img[data-fade]').forEach((img) => {
         img.addEventListener('error', () => markLoaded(img), { once: true });
     }
 });
-
-// ── Екран завантаження 0→100% (лише при першому відкритті сайту в сесії) ──────
-const preloader = document.querySelector('[data-preloader]');
-const startPage = () => document.dispatchEvent(new Event('apex:ready'));
-if (preloader && document.documentElement.classList.contains('is-preloading')) {
-    const valueEl = preloader.querySelector('[data-preloader-value]');
-    const barEl = preloader.querySelector('[data-preloader-bar]');
-    const images = [...document.querySelectorAll('img[data-preload]')];
-    let target = 0;
-    let shown = 0;
-    const update = () => {
-        const done = images.filter((i) => i.complete).length;
-        target = images.length ? Math.round((done / images.length) * 100) : 100;
-    };
-    images.forEach((i) => i.addEventListener('load', update, { once: true }));
-    images.forEach((i) => i.addEventListener('error', update, { once: true }));
-    update();
-    const forceDone = setTimeout(() => { target = 100; }, 4000); // фото завелике — не тримаємо довше 4 с
-    const tick = () => {
-        shown += Math.max(1, (target - shown) * 0.12);
-        shown = Math.min(shown, target);
-        valueEl.textContent = String(Math.round(shown));
-        barEl.style.width = `${shown}%`;
-        if (shown >= 100) {
-            clearTimeout(forceDone);
-            try { sessionStorage.setItem('apex-loaded', '1'); } catch (e) { /* приватний режим */ }
-            setTimeout(() => {
-                preloader.classList.add('is-done');
-                document.documentElement.classList.remove('is-preloading');
-                startPage();
-            }, 250);
-            return;
-        }
-        requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-} else {
-    requestAnimationFrame(startPage);
-}
 
 // ── Мобільне меню ─────────────────────────────────────────────────────────────
 document.querySelector('[data-menu-toggle]')?.addEventListener('click', (e) => {
@@ -119,11 +64,8 @@ const counterObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.3 });
 if (!reduceMotion) counters.forEach((el) => { el.textContent = '0'; });
 
-// Анімації стартують лише після зникнення екрана завантаження
-document.addEventListener('apex:ready', () => {
-    document.querySelectorAll('[data-reveal]').forEach((el) => revealObserver.observe(el));
-    counters.forEach((el) => counterObserver.observe(el));
-}, { once: true });
+document.querySelectorAll('[data-reveal]').forEach((el) => revealObserver.observe(el));
+counters.forEach((el) => counterObserver.observe(el));
 
 // Повернення «Назад» з кешу браузера (bfcache): анімації запускаються знову
 window.addEventListener('pageshow', (e) => {
@@ -290,13 +232,11 @@ confirmDialog.querySelector('[data-ok]').addEventListener('click', () => {
     confirmDialog.close();
     pendingForm?.submit();
 });
-confirmDialog.addEventListener('close', () => lenis?.start());
 document.addEventListener('submit', (e) => {
     const form = e.target.closest('form[data-confirm]');
     if (!form) return;
     e.preventDefault();
     pendingForm = form;
     confirmDialog.querySelector('[data-text]').textContent = form.dataset.confirm;
-    lenis?.stop();
     confirmDialog.showModal();
 });

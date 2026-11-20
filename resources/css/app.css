@@ -71,15 +71,7 @@
     [data-reveal] { opacity: 1; transform: none; transition: none; }
 }
 
-/* Плавна прокрутка Lenis */
-html.lenis, html.lenis body { height: auto; }
-.lenis.lenis-smooth { scroll-behavior: auto !important; }
-.lenis.lenis-stopped { overflow: hidden; }
 
-/* Екран завантаження: лише при першому відкритті сайту в сесії */
-.preloader { position: fixed; inset: 0; z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center; background: var(--color-night-950); transition: opacity .7s ease, visibility .7s; }
-.is-preloading .preloader { display: flex; }
-.preloader.is-done { opacity: 0; visibility: hidden; }
 
 /* Фото проявляються після завантаження, під ними — м'який перелив */
 .img-shell { background: linear-gradient(100deg, #0d1430 30%, #1a2550 50%, #0d1430 70%); background-size: 300% 100%; animation: shimmer 1.6s linear infinite; }

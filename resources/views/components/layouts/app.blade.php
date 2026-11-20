@@ -6,16 +6,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ isset($title) ? $title.' — ' : '' }}{{ config('app.name') }}</title>
     <meta name="description" content="APEX TRACK — оренда спортивних автомобілів і болідів для заїздів на гоночних треках.">
-    <script>try { if (!sessionStorage.getItem('apex-loaded')) document.documentElement.classList.add('is-preloading'); } catch (e) {}</script>
     @stack('head')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen flex flex-col">
-    <div class="preloader" data-preloader aria-hidden="true">
-        <p class="text-sm font-bold tracking-[0.4em] text-white">APEX<span class="text-apex-400">·</span>TRACK</p>
-        <p class="mt-6 text-6xl font-light tabular-nums text-white sm:text-8xl"><span data-preloader-value>0</span>%</p>
-        <div class="mt-8 h-px w-48 overflow-hidden bg-white/10"><div class="h-full w-0 bg-apex-400 transition-[width] duration-300" data-preloader-bar></div></div>
-    </div>
     <header class="fixed inset-x-0 top-0 z-50 bg-night-950/80 backdrop-blur-lg" data-header>
         <div class="mx-auto flex h-14 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
             <a href="{{ route('home') }}" class="text-sm font-bold tracking-[0.4em] text-white">
