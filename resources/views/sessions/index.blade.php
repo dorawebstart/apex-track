@@ -10,10 +10,13 @@
                 <p class="max-w-lg text-lg text-slate-400 lg:justify-self-end">Усі опубліковані трек-сесії: суперкари, гран-турізмо, гіперкари та трекові боліди на автодромах Європи.</p>
             </div>
 
-            <form method="GET" action="{{ route('sessions.index') }}" class="mt-14 grid gap-6 border-t border-white/10 pt-8 md:grid-cols-[2fr_1fr_1fr_1fr_auto] md:items-end">
-                <div>
+            <form method="GET" action="{{ route('sessions.index') }}" class="mt-14 grid gap-6 border-t border-white/10 pt-8 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr_1fr_auto] md:items-end">
+                <div class="relative" data-suggest data-suggest-url="{{ route('sessions.suggest') }}">
                     <label for="q" class="label">Пошук за назвою</label>
-                    <input id="q" name="q" type="search" value="{{ $filters['q'] ?? '' }}" placeholder="Напр., F40 або Ring" class="input">
+                    <input id="q" name="q" type="search" value="{{ $filters['q'] ?? '' }}" placeholder="Напр., F40 або Ring" class="input"
+                           autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="q-suggestions">
+                    <ul id="q-suggestions" role="listbox" hidden
+                        class="absolute inset-x-0 top-full z-30 mt-2 overflow-hidden rounded-2xl bg-white py-2 text-ink-900 shadow-2xl shadow-black/40"></ul>
                 </div>
                 <div>
                     <label for="category" class="label">Клас авто</label>
@@ -21,6 +24,15 @@
                         <option value="">Усі класи</option>
                         @foreach ($categories as $category)
                             <option value="{{ $category->slug }}" @selected(($filters['category'] ?? '') === $category->slug)>{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label for="brand" class="label">Марка</label>
+                    <select id="brand" name="brand" class="input">
+                        <option value="">Усі марки</option>
+                        @foreach ($brands as $brand)
+                            <option value="{{ $brand }}" @selected(($filters['brand'] ?? '') === $brand)>{{ $brand }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -37,7 +49,7 @@
                     <a href="{{ route('sessions.index') }}" class="btn-ghost text-white">Скинути</a>
                 </div>
                 @if ($errors->any())
-                    <p class="text-sm text-rose-300 md:col-span-5">{{ $errors->first() }}</p>
+                    <p class="text-sm text-rose-300 md:col-span-2 lg:col-span-6">{{ $errors->first() }}</p>
                 @endif
             </form>
         </div>

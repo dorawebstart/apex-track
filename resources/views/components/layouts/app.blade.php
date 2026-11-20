@@ -10,7 +10,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen flex flex-col">
-    <header class="fixed inset-x-0 top-0 z-50 transition duration-300" data-header>
+    <header class="fixed inset-x-0 top-0 z-50 bg-night-950/80 backdrop-blur-lg" data-header>
         <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-4 sm:px-6 lg:px-8">
             <a href="{{ route('home') }}" class="font-display text-lg font-bold tracking-[0.35em] text-white">
                 APEX<span class="text-apex-400">·</span>TRACK

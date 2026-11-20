@@ -9,12 +9,6 @@ document.querySelector('[data-menu-toggle]')?.addEventListener('click', (e) => {
     e.currentTarget.setAttribute('aria-expanded', String(open));
 });
 
-// Шапка темнішає після прокрутки
-const header = document.querySelector('[data-header]');
-window.addEventListener('scroll', () => {
-    header?.classList.toggle('bg-night-950/85', window.scrollY > 40);
-    header?.classList.toggle('backdrop-blur-lg', window.scrollY > 40);
-}, { passive: true });
 
 // Флеш-повідомлення: закрити вручну або автоматично через 5 с
 const flash = document.querySelector('[data-flash]');
@@ -106,12 +100,120 @@ const animateNumber = (el, target, decimals, duration = 1800) => {
     requestAnimationFrame(tick);
 };
 
+// Лічильники: одразу ставимо 0 і запускаємо, коли число видно (і батьківський блок уже «виїхав»)
+const counters = [...document.querySelectorAll('[data-count-to]')];
 const counterObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
         const el = entry.target;
-        animateNumber(el, Number(el.dataset.countTo), Number(el.dataset.decimals ?? 0));
         counterObserver.unobserve(el);
+        const delay = el.closest('[data-reveal]') ? 350 : 0;
+        setTimeout(() => animateNumber(el, Number(el.dataset.countTo), Number(el.dataset.decimals ?? 0)), delay);
     });
-}, { threshold: 0.6 });
-document.querySelectorAll('[data-count-to]').forEach((el) => counterObserver.observe(el));
+}, { threshold: 0.3 });
+
+const startCounters = () => counters.forEach((el) => {
+    if (!reduceMotion) el.textContent = '0';
+    counterObserver.observe(el);
+});
+startCounters();
+
+// Повернення «Назад» з кешу браузера (bfcache): анімації запускаються знову
+window.addEventListener('pageshow', (e) => {
+    if (!e.persisted) return;
+    document.querySelectorAll('[data-reveal]').forEach((el) => { el.classList.remove('is-visible'); revealObserver.observe(el); });
+    startCounters();
+});
+
+// Підказки пошуку: власний випадний список зі збігами з бази (замість історії браузера)
+document.querySelectorAll('[data-suggest]').forEach((box) => {
+    const input = box.querySelector('input');
+    const list = box.querySelector('[role="listbox"]');
+    const escape = (t) => t.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    let items = [];
+    let active = -1;
+    let timer;
+    let controller;
+
+    const close = () => { list.hidden = true; input.setAttribute('aria-expanded', 'false'); active = -1; };
+    const highlight = () => list.querySelectorAll('li').forEach((li, i) => {
+        li.classList.toggle('bg-paper-100', i === active);
+        li.setAttribute('aria-selected', String(i === active));
+    });
+
+    const render = (query) => {
+        if (!items.length) {
+            list.innerHTML = `<li class="px-4 py-3 text-sm text-ink-600">Немає збігів для «${escape(query)}»</li>`;
+        } else {
+            const safe = query.replace(/[.*+?^$(){}|[\]\\]/g, '\\$&');
+            const re = new RegExp('(' + safe + ')', 'ig');
+            list.innerHTML = items.map((it, i) => `
+                <li role="option" id="sugg-${i}" class="cursor-pointer px-4 py-3 transition hover:bg-paper-100" data-index="${i}">
+                    <p class="font-semibold">${escape(it.title).replace(re, '<mark class="bg-apex-300/60 rounded px-0.5">$1</mark>')}</p>
+                    <p class="text-sm text-ink-600">${escape(it.subtitle)}</p>
+                </li>`).join('');
+        }
+        list.hidden = false;
+        input.setAttribute('aria-expanded', 'true');
+    };
+
+    input.addEventListener('input', () => {
+        clearTimeout(timer);
+        const query = input.value.trim();
+        if (query.length < 2) { close(); return; }
+        timer = setTimeout(async () => {
+            controller?.abort();
+            controller = new AbortController();
+            try {
+                const res = await fetch(`${box.dataset.suggestUrl}?q=${encodeURIComponent(query)}`, {
+                    headers: { Accept: 'application/json' }, signal: controller.signal,
+                });
+                items = await res.json();
+                active = -1;
+                render(query);
+            } catch (err) {
+                if (err.name !== 'AbortError') close();
+            }
+        }, 200);
+    });
+
+    input.addEventListener('keydown', (e) => {
+        if (list.hidden || !items.length) return;
+        if (e.key === 'ArrowDown') { e.preventDefault(); active = (active + 1) % items.length; highlight(); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); active = (active - 1 + items.length) % items.length; highlight(); }
+        else if (e.key === 'Enter' && active >= 0) { e.preventDefault(); window.location = items[active].url; }
+        else if (e.key === 'Escape') close();
+    });
+
+    list.addEventListener('mousedown', (e) => {
+        const li = e.target.closest('[data-index]');
+        if (li) window.location = items[Number(li.dataset.index)].url;
+    });
+    input.addEventListener('blur', () => setTimeout(close, 150));
+});
+
+// Підтвердження дій (бронювання, скасування, видалення) у власному модальному вікні
+const confirmDialog = document.createElement('dialog');
+confirmDialog.className = 'm-auto w-[min(92vw,28rem)] rounded-3xl bg-paper-50 p-8 text-ink-900 shadow-2xl backdrop:bg-night-950/70 backdrop:backdrop-blur-sm';
+confirmDialog.innerHTML = `
+    <p class="eyebrow text-apex-700">Підтвердження</p>
+    <p class="mt-4 text-lg leading-relaxed" data-text></p>
+    <div class="mt-8 flex justify-end gap-3">
+        <button type="button" class="btn border border-ink-900/20 hover:border-ink-900" data-cancel>Ні</button>
+        <button type="button" class="btn-dark" data-ok>Так, підтверджую</button>
+    </div>`;
+document.body.append(confirmDialog);
+let pendingForm = null;
+confirmDialog.querySelector('[data-cancel]').addEventListener('click', () => confirmDialog.close());
+confirmDialog.querySelector('[data-ok]').addEventListener('click', () => {
+    confirmDialog.close();
+    pendingForm?.submit();
+});
+document.addEventListener('submit', (e) => {
+    const form = e.target.closest('form[data-confirm]');
+    if (!form) return;
+    e.preventDefault();
+    pendingForm = form;
+    confirmDialog.querySelector('[data-text]').textContent = form.dataset.confirm;
+    confirmDialog.showModal();
+});

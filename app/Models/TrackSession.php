@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Storage;
  * Трек-сесія: конкретне авто на треку в заданий час. capacity — кількість пілотів-слотів.
  */
 #[Fillable([
-    'category_id', 'created_by', 'title', 'description', 'car_model', 'track_name',
+    'category_id', 'created_by', 'title', 'description', 'car_model', 'brand', 'track_name',
     'horsepower', 'top_speed_kmh', 'zero_to_100', 'starts_at', 'ends_at', 'capacity', 'image_path', 'status',
 ])]
 class TrackSession extends Model
@@ -65,6 +65,20 @@ class TrackSession extends Model
     public function activeBookings(): HasMany
     {
         return $this->bookings()->where('status', 'active');
+    }
+
+    /**
+     * Марка з назви моделі: «Aston Martin DBS» → «Aston Martin», «Ferrari F40» → «Ferrari».
+     */
+    public static function brandFromModel(string $carModel): string
+    {
+        foreach (['Aston Martin', 'Red Bull', 'Mercedes-AMG', 'Alfa Romeo', 'Land Rover'] as $multiWord) {
+            if (str_starts_with($carModel, $multiWord)) {
+                return $multiWord;
+            }
+        }
+
+        return strtok($carModel, ' ') ?: $carModel;
     }
 
     /**

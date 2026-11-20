@@ -29,6 +29,7 @@ class TrackSessionSeeder extends Seeder
                 'title' => $title,
                 'description' => $description,
                 'car_model' => $car,
+                'brand' => TrackSession::brandFromModel($car),
                 'track_name' => $track,
                 'horsepower' => $hp,
                 'top_speed_kmh' => $speed,

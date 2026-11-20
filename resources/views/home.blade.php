@@ -25,10 +25,10 @@
                              width="1920" height="1080" decoding="async"
                              @if ($loop->first) fetchpriority="high" @else loading="lazy" @endif
                              class="aspect-[16/9] w-full object-cover sm:aspect-[21/9]">
-                        <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-night-950 via-night-950/10 to-transparent"></div>
+                        <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-night-950/60 via-transparent to-transparent"></div>
                     </div>
 
-                    <div class="relative z-10 -mt-16 grid gap-6 px-2 pb-2 sm:-mt-24 sm:px-8 md:grid-cols-2 md:items-end">
+                    <div class="mt-10 grid gap-6 md:grid-cols-2 md:items-end md:gap-16">
                         <div>
                             <p class="eyebrow text-apex-300">{{ $session->category->name }} · {{ $session->starts_at->translatedFormat('j F') }} · {{ $session->track_name }}</p>
                             <h1 class="mt-3 text-3xl font-medium uppercase leading-tight text-white sm:text-5xl">{{ $session->car_model }}</h1>
@@ -37,7 +37,7 @@
                                 <a href="{{ route('sessions.show', $session) }}#booking" class="link-underline text-apex-300">Забронювати ›</a>
                             </div>
                         </div>
-                        <p class="max-w-md text-lg leading-relaxed text-slate-300 md:justify-self-end">{{ Str::limit($session->description, 140) }}</p>
+                        <p class="max-w-lg text-lg leading-relaxed text-slate-300 md:justify-self-end md:text-right">{{ Str::limit($session->description, 140) }}</p>
                     </div>
                 </article>
             @empty

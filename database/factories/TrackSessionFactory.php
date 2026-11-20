@@ -27,6 +27,7 @@ class TrackSessionFactory extends Factory
             'title' => 'Трек-день '.fake()->unique()->bothify('??-###'),
             'description' => fake()->paragraph(3),
             'car_model' => fake()->randomElement(['Porsche 911 GT3', 'Ferrari 296 GTB', 'McLaren 750S']),
+            'brand' => fn (array $attributes): string => TrackSession::brandFromModel($attributes['car_model']),
             'track_name' => fake()->randomElement(['Slovakia Ring', 'Hungaroring', 'Tor Poznań']),
             'horsepower' => fake()->numberBetween(400, 900),
             'top_speed_kmh' => fake()->numberBetween(280, 350),
