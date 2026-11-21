@@ -50,8 +50,11 @@ DB_PASSWORD=
 php artisan migrate --seed    # таблиці + демо-дані з фото
 php artisan storage:link      # доступ до завантажених зображень
 npm run build                 # production-збірка CSS/JS
-php artisan serve --port=8004 # http://localhost:8004
+php artisan serve --port=8004 --no-reload # http://localhost:8004
 ```
+
+На Windows `--no-reload` обов'язковий: без нього `artisan serve` не передає серверу змінні `TEMP`/`TMP`,
+і завантаження фото через форму завершується помилкою «Не вдалося завантажити файл».
 
 ## Демо-дані та облікові записи
 
