@@ -41,13 +41,13 @@
                                 <option value="{{ $brand }}" @selected(($filters['brand'] ?? '') === $brand)>{{ $brand }}</option>
                             @endforeach
                         </select>
-                        <div class="flex items-center gap-2 rounded-full bg-white/[0.06] py-1 pl-4 pr-1 ring-1 ring-white/10">
+                        <div class="flex w-full items-center gap-2 rounded-full bg-white/[0.06] py-1 pl-4 pr-1 ring-1 ring-white/10 sm:w-auto">
                             <span class="text-white/50">Період</span>
                             <label for="from" class="sr-only">Дата від</label>
-                            <input id="from" name="from" type="date" value="{{ $filters['from'] ?? '' }}" class="rounded-full border-0 bg-transparent px-2 py-1.5 text-white [color-scheme:dark] focus:ring-2 focus:ring-apex-500">
+                            <input id="from" name="from" type="date" value="{{ $filters['from'] ?? '' }}" class="min-w-0 flex-1 rounded-full border-0 bg-transparent px-2 py-1.5 text-white [color-scheme:dark] focus:ring-2 focus:ring-apex-500 sm:flex-none">
                             <span class="text-white/40">—</span>
                             <label for="to" class="sr-only">Дата до</label>
-                            <input id="to" name="to" type="date" value="{{ $filters['to'] ?? '' }}" class="rounded-full border-0 bg-transparent px-2 py-1.5 text-white [color-scheme:dark] focus:ring-2 focus:ring-apex-500">
+                            <input id="to" name="to" type="date" value="{{ $filters['to'] ?? '' }}" class="min-w-0 flex-1 rounded-full border-0 bg-transparent px-2 py-1.5 text-white [color-scheme:dark] focus:ring-2 focus:ring-apex-500 sm:flex-none">
                         </div>
                         @if (array_filter($filters))
                             <a href="{{ route('sessions.index') }}" class="link-underline px-2 font-semibold text-white">Скинути фільтри</a>

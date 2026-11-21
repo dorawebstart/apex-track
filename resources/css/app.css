@@ -35,6 +35,8 @@
 @layer base {
     html { scroll-behavior: smooth; }
     body { @apply bg-night-950 text-slate-100 font-sans antialiased; }
+    /* Блоки, що «виїжджають» збоку, не мають розширювати сторінку на телефоні (clip не ламає sticky) */
+    html, body { overflow-x: clip; }
     h1, h2, h3 { @apply font-display tracking-[-0.02em]; }
     :focus-visible { @apply outline-2 outline-offset-2 outline-apex-400; }
 }
